@@ -1,0 +1,15 @@
+This is my personal implementation of the classic arcade game [[https://en.wikipedia.org/wiki/Pac-Man][Pac-Man]].
+
+* Build
+
+I build this project with xmake. To build it on your machine, simply clone this project, update its submodules, and the submodules of SDL_ttf. Then xmake should be able to build it. You may need to install some other libraries required by those SDL libraries though. The project should build on both Linux and Windows.
+
+#+begin_src shell
+  git clone https://github.com/drcxd/pacman
+  cd pacman
+  git submodule update --init --depth 1
+  cd lib/SDL_ttf
+  git submodule update --init --depth 1
+  xmake f
+  xmake
+#+end_src
