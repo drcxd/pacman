@@ -64,15 +64,22 @@ target("pacman")
     set_kind("binary")
     add_files("src/*.cpp")
     add_packages(table.unpack(packages))
+
+    -- NOTE: On Linux, xmake prefers .a libraries. Our current build
+    -- configuration produces SDL3.so, SDL3_test.so and
+    -- SDL3_test.a. When xmake sees SDL3_test.a, it only links to this
+    -- library and ignore the SDL3.so, so some symbols becomes
+    -- undefined at link time.
+    add_links("SDL3")
+
     set_rundir("$(projectdir)")
+
     -- Copy all libraries to the directory of the executable
     after_build(function (target)
-        if target:is_plat("windows", "mingw") then
-            for _, name in ipairs(packages) do
-                local pkg = target:pkg(name)
-                os.cp(path.join(pkg:installdir(), "bin", "*"), target:targetdir())
-            end
-        end
+          for _, name in ipairs(packages) do
+             local pkg = target:pkg(name)
+             os.cp(path.join(pkg:installdir(), "bin", "*"), target:targetdir())
+          end
     end)
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
