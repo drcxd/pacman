@@ -7,6 +7,7 @@
 #include "global.hh"
 #include <base/game_instance.hh>
 #include <game/object.hh>
+#include <game/input_handler.hh>
 
 constexpr int WINDOW_WIDTH = 640;
 constexpr int WINDOW_HEIGHT = 480;
@@ -37,12 +38,8 @@ auto SDL_AppInit(void** /*appstate*/, int /*argc*/, char* /*argv*/[]) -> SDL_App
 auto SDL_AppEvent(void* /*appstate*/, SDL_Event *event) -> SDL_AppResult {
   if (event->type == SDL_EVENT_QUIT) {
     return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
-  } else if (event->type == SDL_EVENT_KEY_UP) {
-    return OnKeyUp(event->key);
-  } else if (event->type == SDL_EVENT_KEY_DOWN) {
-    return OnKeyDown(event->key);
   }
-  return SDL_APP_CONTINUE; /* carry on with the program! */
+  return InputHandler::HandleEvent(event);
 }
 
 /* This function runs once per frame, and is the heart of the program. */
