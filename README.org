@@ -13,3 +13,7 @@ I build this project with xmake. To build it on your machine, simply clone this 
   xmake f
   xmake
 #+end_src
+
+* Assets
+
+All the assets are created by [[https://pixelaholic.itch.io/][pixelaholic]], obtained [[https://pixelaholic.itch.io/pac-man-game-art][here]].
