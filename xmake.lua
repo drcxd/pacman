@@ -62,8 +62,10 @@ end
 
 target("pacman")
     set_kind("binary")
-    add_files("src/*.cpp")
+    add_files("src/**.cpp")
+    add_files("src/**.cc")
     add_packages(table.unpack(packages))
+    add_includedirs(path.join(os.scriptdir(), "src"))
 
     -- NOTE: On Linux, xmake prefers .a libraries. Our current build
     -- configuration produces SDL3.so, SDL3_test.so and

@@ -4,9 +4,10 @@
 
 #include <string>
 
-/* We will use this renderer to draw into this window every frame. */
-static SDL_Window *window = NULL;
-static SDL_Renderer *renderer = NULL;
+#include "base/game_instance.hh"
+
+
+
 static SDL_Texture *texture = NULL;
 static int texture_width = 0;
 static int texture_height = 0;
@@ -15,26 +16,21 @@ constexpr int WINDOW_WIDTH = 640;
 constexpr int WINDOW_HEIGHT = 480;
 
 namespace {
+  GameInstance* g_game_instance = nullptr;
   auto OnKeyUp(SDL_KeyboardEvent const& event) -> SDL_AppResult;
   auto OnKeyDown(SDL_KeyboardEvent const& event) -> SDL_AppResult;
 }
 
 /* This function runs once at startup. */
 auto SDL_AppInit(void** /*appstate*/, int /*argc*/, char* /*argv*/[]) -> SDL_AppResult {
-  SDL_SetAppMetadata("Pac-Man", "1.0", "com.vovo.pac-man");
+  SDL_SetAppMetadata("Pac-Man", "1.0", "pac-man");
 
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
     return SDL_APP_FAILURE;
   }
 
-  if (!SDL_CreateWindowAndRenderer("Pac-Man", WINDOW_WIDTH, WINDOW_HEIGHT,
-                                   SDL_WINDOW_RESIZABLE, &window, &renderer)) {
-    SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
-    return SDL_APP_FAILURE;
-  }
-  SDL_SetRenderLogicalPresentation(renderer, WINDOW_WIDTH, WINDOW_HEIGHT,
-                                   SDL_LOGICAL_PRESENTATION_LETTERBOX);
+  g_game_instance = new GameInstance{"Pac-Man", WINDOW_WIDTH, WINDOW_HEIGHT};
 
   std::string png_path{"assets/ghosts/pinky.png"};
 
@@ -47,7 +43,8 @@ auto SDL_AppInit(void** /*appstate*/, int /*argc*/, char* /*argv*/[]) -> SDL_App
   texture_width = surface->w;
   texture_height = surface->h;
 
-  texture = SDL_CreateTextureFromSurface(renderer, surface);
+  texture =
+      SDL_CreateTextureFromSurface(g_game_instance->GetRenderer(), surface);
   if (!texture) {
     SDL_Log("Couldn't create static texture: %s", SDL_GetError());
     return SDL_APP_FAILURE;
@@ -76,6 +73,7 @@ auto SDL_AppEvent(void* /*appstate*/, SDL_Event *event) -> SDL_AppResult {
 auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
   SDL_FRect dst_rect;
 
+  auto* renderer = g_game_instance->GetRenderer();
   /* as you can see from this, rendering draws over whatever was drawn before
    * it. */
   SDL_SetRenderDrawColor(renderer, 0, 0, 0,
