@@ -4,6 +4,8 @@
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_video.h"
 
+#include "game/object.hh"
+
 GameInstance::GameInstance(std::string_view title, int width, int height)
   : _title (title)
   , _width (width)
@@ -18,4 +20,13 @@ GameInstance::GameInstance(std::string_view title, int width, int height)
     SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
     _error = true;
   }
+}
+
+auto GameInstance::GetPlayerObject() -> Object* {
+  return _player;
+}
+
+auto GameInstance::InitPlayer(std::string_view texture_path) -> bool {
+  _player = new Object();
+  return _player->Init(texture_path);
 }

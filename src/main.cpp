@@ -15,7 +15,6 @@ constexpr int WINDOW_HEIGHT = 480;
 namespace {
   auto OnKeyUp(SDL_KeyboardEvent const& event) -> SDL_AppResult;
   auto OnKeyDown(SDL_KeyboardEvent const& event) -> SDL_AppResult;
-  Object ghost;
 }
 
 /* This function runs once at startup. */
@@ -29,7 +28,7 @@ auto SDL_AppInit(void** /*appstate*/, int /*argc*/, char* /*argv*/[]) -> SDL_App
 
   g_game_instance = new GameInstance{"Pac-Man", WINDOW_WIDTH, WINDOW_HEIGHT};
 
-  ghost.Init("assets/ghosts/pinky.png");
+  g_game_instance->InitPlayer("assets/ghosts/pinky.png");
 
   return SDL_APP_CONTINUE; /* carry on with the program! */
 }
@@ -53,7 +52,9 @@ auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
                          SDL_ALPHA_OPAQUE); /* black, full alpha */
   SDL_RenderClear(renderer);                /* start with a blank canvas. */
 
-  ghost.Draw(renderer);
+  if (auto* player = g_game_instance->GetPlayerObject()) {
+    player->Draw(renderer);
+  }
 
   SDL_RenderPresent(renderer); /* put it all on the screen! */
 
