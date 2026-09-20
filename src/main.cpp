@@ -4,21 +4,17 @@
 
 #include <string>
 
-#include "base/game_instance.hh"
-
-
-
-static SDL_Texture *texture = NULL;
-static int texture_width = 0;
-static int texture_height = 0;
+#include "global.hh"
+#include <base/game_instance.hh>
+#include <base/texture.hh>
 
 constexpr int WINDOW_WIDTH = 640;
 constexpr int WINDOW_HEIGHT = 480;
 
 namespace {
-  GameInstance* g_game_instance = nullptr;
   auto OnKeyUp(SDL_KeyboardEvent const& event) -> SDL_AppResult;
   auto OnKeyDown(SDL_KeyboardEvent const& event) -> SDL_AppResult;
+  Texture ghost_texture;
 }
 
 /* This function runs once at startup. */
@@ -32,27 +28,7 @@ auto SDL_AppInit(void** /*appstate*/, int /*argc*/, char* /*argv*/[]) -> SDL_App
 
   g_game_instance = new GameInstance{"Pac-Man", WINDOW_WIDTH, WINDOW_HEIGHT};
 
-  std::string png_path{"assets/ghosts/pinky.png"};
-
-  SDL_Surface* surface = SDL_LoadPNG(png_path.c_str());
-  if (!surface) {
-    SDL_Log("Couldn't load png: %s", SDL_GetError());
-    return SDL_APP_FAILURE;
-  }
-
-  texture_width = surface->w;
-  texture_height = surface->h;
-
-  texture =
-      SDL_CreateTextureFromSurface(g_game_instance->GetRenderer(), surface);
-  if (!texture) {
-    SDL_Log("Couldn't create static texture: %s", SDL_GetError());
-    return SDL_APP_FAILURE;
-  }
-
-  SDL_DestroySurface(
-      surface); /* done with this, the texture has a copy of the pixels now. */
-  // TODO: Create wrapper classes for texture, surface, and log.
+  ghost_texture.Init("assets/ghosts/pinky.png");
 
   return SDL_APP_CONTINUE; /* carry on with the program! */
 }
@@ -81,11 +57,13 @@ auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
   SDL_RenderClear(renderer);                /* start with a blank canvas. */
 
   /* center this one. */
-  dst_rect.x = ((float)(WINDOW_WIDTH - texture_width)) / 2.0f;
-  dst_rect.y = ((float)(WINDOW_HEIGHT - texture_height)) / 2.0f;
-  dst_rect.w = (float)texture_width;
-  dst_rect.h = (float)texture_height;
-  SDL_RenderTexture(renderer, texture, NULL, &dst_rect);
+  int width = ghost_texture.GetWidth();
+  int height = ghost_texture.GetHeight();
+  dst_rect.x = ((float)(WINDOW_WIDTH - width)) / 2.0f;
+  dst_rect.y = ((float)(WINDOW_HEIGHT - height)) / 2.0f;
+  dst_rect.w = (float)width;
+  dst_rect.h = (float)height;
+  SDL_RenderTexture(renderer, ghost_texture.GetTexture(), NULL, &dst_rect);
 
   SDL_RenderPresent(renderer); /* put it all on the screen! */
 
@@ -94,7 +72,6 @@ auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
 
 /* This function runs once at shutdown. */
 auto SDL_AppQuit(void* /*appstate*/, SDL_AppResult /*result*/) -> void {
-  SDL_DestroyTexture(texture);
   /* SDL will clean up the window/renderer for us. */
 }
 
