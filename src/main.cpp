@@ -6,7 +6,7 @@
 
 #include "global.hh"
 #include <base/game_instance.hh>
-#include <base/texture.hh>
+#include <game/object.hh>
 
 constexpr int WINDOW_WIDTH = 640;
 constexpr int WINDOW_HEIGHT = 480;
@@ -14,7 +14,7 @@ constexpr int WINDOW_HEIGHT = 480;
 namespace {
   auto OnKeyUp(SDL_KeyboardEvent const& event) -> SDL_AppResult;
   auto OnKeyDown(SDL_KeyboardEvent const& event) -> SDL_AppResult;
-  Texture ghost_texture;
+  Object ghost;
 }
 
 /* This function runs once at startup. */
@@ -28,7 +28,7 @@ auto SDL_AppInit(void** /*appstate*/, int /*argc*/, char* /*argv*/[]) -> SDL_App
 
   g_game_instance = new GameInstance{"Pac-Man", WINDOW_WIDTH, WINDOW_HEIGHT};
 
-  ghost_texture.Init("assets/ghosts/pinky.png");
+  ghost.Init("assets/ghosts/pinky.png");
 
   return SDL_APP_CONTINUE; /* carry on with the program! */
 }
@@ -56,14 +56,7 @@ auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
                          SDL_ALPHA_OPAQUE); /* black, full alpha */
   SDL_RenderClear(renderer);                /* start with a blank canvas. */
 
-  /* center this one. */
-  int width = ghost_texture.GetWidth();
-  int height = ghost_texture.GetHeight();
-  dst_rect.x = ((float)(WINDOW_WIDTH - width)) / 2.0f;
-  dst_rect.y = ((float)(WINDOW_HEIGHT - height)) / 2.0f;
-  dst_rect.w = (float)width;
-  dst_rect.h = (float)height;
-  SDL_RenderTexture(renderer, ghost_texture.GetTexture(), NULL, &dst_rect);
+  ghost.Draw(renderer);
 
   SDL_RenderPresent(renderer); /* put it all on the screen! */
 
