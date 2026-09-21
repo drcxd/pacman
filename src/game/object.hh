@@ -4,20 +4,20 @@
 
 #include <base/texture.hh>
 
-class Object
-{
+class Object {
 public:
   Object() = default;
   auto Init(std::string_view texture_path) -> bool;
-  void MoveX(int delta) { _x += delta; }
-  void MoveY(int delta) { _y += delta; }
-  auto GetPosX() const -> int { return _x; }
-  auto GetPosY() const -> int { return _y; }
+  void MoveX(double delta) { _x += delta; }
+  void MoveY(double delta) { _y += delta; }
+  auto GetPosX() const -> double { return _x; }
+  auto GetPosY() const -> double { return _y; }
+  void Update();
   void Draw(struct SDL_Renderer* renderer);
 private:
   Texture _texture;
-  // The location of the object on the window! TODO: make it a location in the
-  // game world.
-  int _x = 0;
-  int _y = 0;
+  // The location of the object on the window!
+  // TODO: make it a location in the game world.
+  double _x = 0;
+  double _y = 0;
 };
