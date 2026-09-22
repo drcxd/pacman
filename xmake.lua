@@ -66,6 +66,7 @@ target("pacman")
     add_files("src/**.cc")
     add_packages(table.unpack(packages))
     add_includedirs(path.join(os.scriptdir(), "src"))
+    add_includedirs(path.join(os.scriptdir(), "lib", "nlohmann"))
 
     -- NOTE: On Linux, xmake prefers .a libraries. Our current build
     -- configuration produces SDL3.so, SDL3_test.so and
