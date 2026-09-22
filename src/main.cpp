@@ -4,6 +4,7 @@
 
 #include "global.hh"
 #include <base/game_instance.hh>
+#include <base/timer.hh>
 #include <game/object.hh>
 #include <game/input_handler.hh>
 
@@ -39,9 +40,13 @@ auto SDL_AppEvent(void* /*appstate*/, SDL_Event* event) -> SDL_AppResult {
   return SDL_APP_CONTINUE;
 }
 
+// TODO: reading these from a configuration file.
+constexpr int MAX_FPS = 500;
+constexpr double FRAME_TIME = 1.0 / MAX_FPS;
+
 /* This function runs once per frame, and is the heart of the program. */
 auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
-  SDL_FRect dst_rect;
+  double delta = gGameInstance->GetDelta();
 
   auto* renderer = gGameInstance->GetRenderer();
   /* as you can see from this, rendering draws over whatever was drawn before
@@ -51,17 +56,23 @@ auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
   SDL_RenderClear(renderer);                /* start with a blank canvas. */
 
   if (auto* player = gGameInstance->GetPlayerObject()) {
-    player->Update();
+    player->Update(delta);
     player->Draw(renderer);
   }
 
   SDL_RenderPresent(renderer); /* put it all on the screen! */
 
   ++gFrameNumber;
+  if (delta < FRAME_TIME) {
+    SDL_Delay(static_cast<unsigned>((FRAME_TIME - delta) * 1000));
+  }
   return SDL_APP_CONTINUE; /* carry on with the program! */
 }
 
 /* This function runs once at shutdown. */
 auto SDL_AppQuit(void* /*appstate*/, SDL_AppResult /*result*/) -> void {
   /* SDL will clean up the window/renderer for us. */
+
+  delete gGameInstance;
+  gGameInstance = nullptr;
 }

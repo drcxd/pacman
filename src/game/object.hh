@@ -12,7 +12,7 @@ public:
   void MoveY(double delta) { _y += delta; }
   auto GetPosX() const -> double { return _x; }
   auto GetPosY() const -> double { return _y; }
-  void Update();
+  void Update(double delta);
   void Draw(struct SDL_Renderer* renderer);
 private:
   Texture _texture;

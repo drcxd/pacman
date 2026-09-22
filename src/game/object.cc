@@ -21,18 +21,19 @@ void Object::Draw(SDL_Renderer* renderer) {
   SDL_RenderTexture(renderer, _texture.GetTexture(), NULL, &dst);
 }
 
-void Object::Update() {
-  constexpr double SPEED = 0.1;
+void Object::Update(double delta) {
+  constexpr double SPEED = 32;
+  double dist_delta = delta * SPEED;
   if (InputHandler::IsKeyDown(SDL_SCANCODE_W)) {
-    MoveY(-SPEED);
+    MoveY(-dist_delta);
   }
   if (InputHandler::IsKeyDown(SDL_SCANCODE_S)) {
-    MoveY(+SPEED);
+    MoveY(+dist_delta);
   }
   if (InputHandler::IsKeyDown(SDL_SCANCODE_A)) {
-    MoveX(-SPEED);
+    MoveX(-dist_delta);
   }
   if (InputHandler::IsKeyDown(SDL_SCANCODE_D)) {
-    MoveX(+SPEED);
+    MoveX(+dist_delta);
   }
 }
