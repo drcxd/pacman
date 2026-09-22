@@ -1,3 +1,4 @@
 #include "global.hh"
 
-GameInstance* g_game_instance = nullptr;
+GameInstance* gGameInstance = nullptr;
+long long gFrameNumber = 0;

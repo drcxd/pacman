@@ -1,3 +1,4 @@
 #pragma once
 
-extern class GameInstance* g_game_instance;
+extern class GameInstance* gGameInstance;
+extern long long gFrameNumber;

@@ -20,9 +20,9 @@ auto SDL_AppInit(void** /*appstate*/, int /*argc*/, char* /*argv*/[])
     return SDL_APP_FAILURE;
   }
 
-  g_game_instance = new GameInstance{"Pac-Man", WINDOW_WIDTH, WINDOW_HEIGHT};
+  gGameInstance = new GameInstance{"Pac-Man", WINDOW_WIDTH, WINDOW_HEIGHT};
 
-  g_game_instance->InitPlayer("assets/ghosts/pinky.png");
+  gGameInstance->InitPlayer("assets/ghosts/pinky.png");
 
   return SDL_APP_CONTINUE; /* carry on with the program! */
 }
@@ -43,20 +43,21 @@ auto SDL_AppEvent(void* /*appstate*/, SDL_Event* event) -> SDL_AppResult {
 auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
   SDL_FRect dst_rect;
 
-  auto* renderer = g_game_instance->GetRenderer();
+  auto* renderer = gGameInstance->GetRenderer();
   /* as you can see from this, rendering draws over whatever was drawn before
    * it. */
   SDL_SetRenderDrawColor(renderer, 0, 0, 0,
                          SDL_ALPHA_OPAQUE); /* black, full alpha */
   SDL_RenderClear(renderer);                /* start with a blank canvas. */
 
-  if (auto* player = g_game_instance->GetPlayerObject()) {
+  if (auto* player = gGameInstance->GetPlayerObject()) {
     player->Update();
     player->Draw(renderer);
   }
 
   SDL_RenderPresent(renderer); /* put it all on the screen! */
 
+  ++gFrameNumber;
   return SDL_APP_CONTINUE; /* carry on with the program! */
 }
 

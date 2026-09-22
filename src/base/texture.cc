@@ -12,7 +12,7 @@ auto Texture::Init(std::string_view path) -> bool {
     _width = surface->w;
     _height = surface->h;
     _texture =
-        SDL_CreateTextureFromSurface(g_game_instance->GetRenderer(), surface);
+        SDL_CreateTextureFromSurface(gGameInstance->GetRenderer(), surface);
     if (_texture == nullptr) {
       SDL_Log("Can not create texture: %s", SDL_GetError());
     }
