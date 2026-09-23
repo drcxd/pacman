@@ -8,9 +8,6 @@
 #include <game/object.hh>
 #include <game/input_handler.hh>
 
-constexpr int WINDOW_WIDTH = 640;
-constexpr int WINDOW_HEIGHT = 480;
-
 /* This function runs once at startup. */
 auto SDL_AppInit(void** /*appstate*/, int /*argc*/, char* /*argv*/[])
     -> SDL_AppResult {
@@ -21,9 +18,15 @@ auto SDL_AppInit(void** /*appstate*/, int /*argc*/, char* /*argv*/[])
     return SDL_APP_FAILURE;
   }
 
-  gGameInstance = new GameInstance{"Pac-Man", WINDOW_WIDTH, WINDOW_HEIGHT};
-
-  gGameInstance->InitPlayer("assets/ghosts/pinky.png");
+  gGameInstance = new GameInstance{"config/game.json"};
+  if (gGameInstance->IsError()) {
+    SDL_Log("Failed to create game instance.");
+    return SDL_APP_FAILURE;
+  }
+  if (!gGameInstance->Init()) {
+    SDL_Log("Failed to initialize game instance.");
+    return SDL_APP_FAILURE;
+  }
 
   return SDL_APP_CONTINUE; /* carry on with the program! */
 }
@@ -39,10 +42,6 @@ auto SDL_AppEvent(void* /*appstate*/, SDL_Event* event) -> SDL_AppResult {
   }
   return SDL_APP_CONTINUE;
 }
-
-// TODO: reading these from a configuration file.
-constexpr int MAX_FPS = 500;
-constexpr double FRAME_TIME = 1.0 / MAX_FPS;
 
 /* This function runs once per frame, and is the heart of the program. */
 auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
@@ -63,8 +62,9 @@ auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
   SDL_RenderPresent(renderer); /* put it all on the screen! */
 
   ++gFrameNumber;
-  if (delta < FRAME_TIME) {
-    SDL_Delay(static_cast<unsigned>((FRAME_TIME - delta) * 1000));
+  double const frame_time = gGameInstance->GetMinFrameTime();
+  if (delta < frame_time) {
+    SDL_Delay(static_cast<unsigned>((frame_time - delta) * 1000 + 0.5));
   }
   return SDL_APP_CONTINUE; /* carry on with the program! */
 }

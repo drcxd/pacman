@@ -6,16 +6,29 @@
 
 #include "game/object.hh"
 
-GameInstance::GameInstance(std::string_view title, int width, int height)
-    : _title(title), _width(width), _height(height) {
-  if (SDL_CreateWindowAndRenderer(_title.data(), _width, _height,
-                                  SDL_WINDOW_RESIZABLE, &_window, &_renderer)) {
-    SDL_SetRenderLogicalPresentation(_renderer, _width, _height,
-                                     SDL_LOGICAL_PRESENTATION_LETTERBOX);
-    _last_time = _timer.GetTime();
+GameInstance::GameInstance(std::string_view config) {
+  if (_settings.Init(config)) {
+    bool succeed = true;
+    succeed = succeed && _settings.GetConfigValue("width", &_width);
+    succeed = succeed && _settings.GetConfigValue("height", &_height);
+    succeed = succeed && _settings.GetConfigValue("title", &_title);
+    if (succeed) {
+      if (SDL_CreateWindowAndRenderer(_title.data(), _width, _height,
+                                      SDL_WINDOW_RESIZABLE, &_window,
+                                      &_renderer)) {
+        SDL_SetRenderLogicalPresentation(_renderer, _width, _height,
+                                         SDL_LOGICAL_PRESENTATION_LETTERBOX);
+      }
+      else {
+        SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
+        _error = true;
+      }
+    }
+    else {
+      _error = true;
+    }
   }
   else {
-    SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
     _error = true;
   }
 }
@@ -24,6 +37,16 @@ GameInstance::~GameInstance() {
   if (_player != nullptr) {
     delete _player;
     _player = nullptr;
+  }
+}
+
+auto GameInstance::Init() -> bool {
+  std::string player_texture;
+  if (_settings.GetConfigValue("player_texture", &player_texture)) {
+    return InitPlayer(player_texture);
+  }
+  else {
+    return false;
   }
 }
 
@@ -42,4 +65,10 @@ auto GameInstance::GetDelta() -> double {
 
 auto GameInstance::GetCurrentTime() const -> double {
   return _timer.GetTimeS();
+}
+
+auto GameInstance::GetMinFrameTime() const -> double {
+  int max_fps = 60;
+  _settings.GetConfigValue("max_fps", &max_fps);
+  return 1.0 / max_fps;
 }
