@@ -1,7 +1,7 @@
 {
-    "width": 640,
-    "height": 640,
+    "width": 224,
+    "height": 248,
     "title": "Pac-Man",
-    "max_fps": 1000,
+    "max_fps": 60,
     "player_texture": "assets/ghosts/pinky.png"
 }
