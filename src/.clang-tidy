@@ -3,14 +3,14 @@
 Checks:
   - clang-diagnostic-*
   - clang-analyzer-*
-  # - cppcoreguidelines-*
-  # - google-explicit-constructor
-  # - google-readability-casting
-  # - google-default-arguments,
-  # - hicpp-*
-  # - misc-*
-  # - modernize-*
-  # - performance-*
+  - cppcoreguidelines-*
+  - google-explicit-constructor
+  - google-readability-casting
+  - google-default-arguments,
+  - hicpp-*
+  - misc-*
+  - modernize-*
+  - performance-*
 WarningsAsErrors: ''
 HeaderFileExtensions:
   - ''
