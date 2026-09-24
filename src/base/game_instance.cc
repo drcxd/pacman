@@ -5,6 +5,7 @@
 #include "SDL3/SDL_video.h"
 
 #include "game/object.hh"
+#include "game/maze.hh"
 
 GameInstance::GameInstance(std::string_view config) {
   if (_settings.Init(config)) {
@@ -17,7 +18,8 @@ GameInstance::GameInstance(std::string_view config) {
                                       SDL_WINDOW_RESIZABLE, &_window,
                                       &_renderer)) {
         SDL_SetRenderLogicalPresentation(_renderer, _width, _height,
-                                         SDL_LOGICAL_PRESENTATION_LETTERBOX);
+                                         SDL_LOGICAL_PRESENTATION_INTEGER_SCALE);
+        SDL_SetDefaultTextureScaleMode(_renderer, SDL_SCALEMODE_PIXELART);
       }
       else {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
@@ -43,11 +45,20 @@ GameInstance::~GameInstance() {
 auto GameInstance::Init() -> bool {
   std::string player_texture;
   if (_settings.GetConfigValue("player_texture", &player_texture)) {
-    return InitPlayer(player_texture);
+    return InitPlayer(player_texture) && InitMaze();
   }
   else {
     return false;
   }
+}
+
+void GameInstance::Update(double delta) {
+  _player->Update(delta);
+}
+
+void GameInstance::GameInstance::Draw(class SDL_Renderer* renderer)  {
+  _maze->Draw(renderer);
+  // _player->Draw(renderer);
 }
 
 auto GameInstance::GetPlayerObject() -> Object* {
@@ -57,6 +68,11 @@ auto GameInstance::GetPlayerObject() -> Object* {
 auto GameInstance::InitPlayer(std::string_view texture_path) -> bool {
   _player = new Object();
   return _player->Init(texture_path);
+}
+
+auto GameInstance::InitMaze() -> bool {
+  _maze = new Maze();
+  return _maze->Init();
 }
 
 auto GameInstance::GetDelta() -> double {
@@ -72,3 +88,4 @@ auto GameInstance::GetMinFrameTime() const -> double {
   _settings.GetConfigValue("max_fps", &max_fps);
   return 1.0 / max_fps;
 }
+

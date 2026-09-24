@@ -54,10 +54,9 @@ auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
                          SDL_ALPHA_OPAQUE); /* black, full alpha */
   SDL_RenderClear(renderer);                /* start with a blank canvas. */
 
-  if (auto* player = gGameInstance->GetPlayerObject()) {
-    player->Update(delta);
-    player->Draw(renderer);
-  }
+  gGameInstance->Update(delta);
+
+  gGameInstance->Draw(renderer);
 
   SDL_RenderPresent(renderer); /* put it all on the screen! */
 

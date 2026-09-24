@@ -7,6 +7,7 @@
 #include <base/settings.hh>
 
 class Object;
+class Maze;
 
 class GameInstance {
 public:
@@ -21,6 +22,10 @@ public:
    * Initialize game logic.
    */
   auto Init() -> bool;
+
+  void Update(double delta);
+
+  void Draw(class SDL_Renderer* renderer);
 
   auto GetPlayerObject() -> Object*;
 
@@ -43,6 +48,7 @@ public:
 
 private:
   auto InitPlayer(std::string_view texture_path) -> bool;
+  auto InitMaze() -> bool;
 
   Settings _settings;
 
@@ -58,4 +64,5 @@ private:
   Timer _timer;
 
   Object* _player = nullptr;
+  Maze* _maze = nullptr;
 };
