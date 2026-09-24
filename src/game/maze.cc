@@ -3,6 +3,7 @@
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
 
+#include <cmath>
 #include <vector>
 
 namespace {
@@ -80,4 +81,11 @@ void Maze::Draw(SDL_Renderer* renderer) {
       SDL_RenderTexture(renderer, _sprite_sheet.GetTexture(), &src, &dst);
     }
   }
+}
+
+auto Maze::CanMove(Position const& src, Direction const& dir) const -> bool {
+  // determine the current tile:
+  int x = std::floor(src.X + 0.5);
+  int y = std::floor(src.Y + 0.5);
+  return false;
 }

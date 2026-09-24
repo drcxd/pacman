@@ -29,6 +29,8 @@ public:
 
   auto GetPlayerObject() -> Object*;
 
+  auto GetMaze() -> Maze const* { return _maze; }
+
   [[nodiscard]] auto GetTimer() const -> Timer const& { return _timer; }
 
   /**
