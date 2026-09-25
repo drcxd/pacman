@@ -9,6 +9,7 @@ public:
   void Draw(class SDL_Renderer* renderer);
   [[nodiscard]] auto CanMove(Position const& src, Direction const& dir) const
       -> bool;
+  void SetToStart(class Object* obj);
 
 private:
   Texture _sprite_sheet;

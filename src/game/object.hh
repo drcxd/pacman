@@ -11,6 +11,7 @@ public:
   auto Init(std::string_view texture_path) -> bool;
   void Update(double delta);
   void Draw(struct SDL_Renderer* renderer);
+  void SetPosition(Position pos) { _pos = pos; }
 private:
   Texture _texture;
   Position _pos;

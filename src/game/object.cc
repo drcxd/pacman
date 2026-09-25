@@ -17,34 +17,33 @@ auto Object::Init(std::string_view texture_path) -> bool {
 
 void Object::Draw(SDL_Renderer* renderer) {
   SDL_FRect dst;
-  dst.x = _pos.X;
-  dst.y = _pos.Y;
-  dst.w = _texture.GetWidth();
-  dst.h = _texture.GetHeight();
+  // TODO: remove constant
+  dst.w = 8;
+  dst.h = 8;
+  dst.x = _pos.X - dst.w / 2;
+  dst.y = _pos.Y - dst.h / 2;
   SDL_RenderTexture(renderer, _texture.GetTexture(), NULL, &dst);
 }
 
 void Object::Update(double delta) {
+  if (InputHandler::IsKeyDown(SDL_SCANCODE_W)) {
+    _dir = {0, -1};
+  }
+  if (InputHandler::IsKeyDown(SDL_SCANCODE_S)) {
+    _dir = {0, 1};
+  }
+  if (InputHandler::IsKeyDown(SDL_SCANCODE_A)) {
+    _dir = {-1, 0};
+  }
+  if (InputHandler::IsKeyDown(SDL_SCANCODE_D)) {
+    _dir = {1, 0};
+  }
   if (auto* maze = gGameInstance->GetMaze()) {
     if (maze->CanMove(_pos, _dir)) {
       constexpr double SPEED = 32;
       double dist_delta = delta * SPEED;
-      if (InputHandler::IsKeyDown(SDL_SCANCODE_W)) {
-        _pos.Y -= dist_delta;
-        // MoveY(-dist_delta);
-      }
-      if (InputHandler::IsKeyDown(SDL_SCANCODE_S)) {
-        _pos.Y += dist_delta;
-        // MoveY(+dist_delta);
-      }
-      if (InputHandler::IsKeyDown(SDL_SCANCODE_A)) {
-        _pos.X -= dist_delta;
-        // MoveX(-dist_delta);
-      }
-      if (InputHandler::IsKeyDown(SDL_SCANCODE_D)) {
-        _pos.X += dist_delta;
-        // MoveX(+dist_delta);
-      }
+      _pos.X += _dir.X * dist_delta;
+      _pos.Y += _dir.Y * dist_delta;
     }
   }
 }
