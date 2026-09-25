@@ -43,11 +43,13 @@ void Object::Update(double delta) {
     _dir = {1, 0};
   }
   if (auto* maze = gGameInstance->GetMaze()) {
-    if (maze->CanMove(_pos, _dir)) {
-      constexpr double SPEED = 32;
-      double dist_delta = delta * SPEED;
-      _pos.X += _dir.X * dist_delta;
-      _pos.Y += _dir.Y * dist_delta;
+    constexpr double SPEED = 32;
+    double dist_delta = delta * SPEED;
+    Position dst = _pos;
+    dst.X += _dir.X * dist_delta;
+    dst.Y += _dir.Y * dist_delta;
+    if (maze->CanMove(_pos, dst)) {
+      _pos = dst;
     }
   }
 }

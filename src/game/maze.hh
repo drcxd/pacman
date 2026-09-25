@@ -7,7 +7,7 @@ class Maze {
 public:
   auto Init() -> bool;
   void Draw(class SDL_Renderer* renderer);
-  [[nodiscard]] auto CanMove(Position const& src, Direction const& dir) const
+  [[nodiscard]] auto CanMove(Position const& src, Position const& dst) const
       -> bool;
   void SetToStart(class Object* obj);
 

@@ -113,17 +113,15 @@ void Maze::Draw(SDL_Renderer* renderer) {
   }
 }
 
-auto Maze::CanMove(Position const& src, Direction const& dir) const -> bool {
+auto Maze::CanMove(Position const& src, Position const& dst) const -> bool {
   // determine the current tile:
-  int x = std::lround(src.X);
-  int y = std::lround(src.Y);
+  int x = std::lround(dst.X);
+  int y = std::lround(dst.Y);
   // find the nearest tile
   int row = 0;
   int column = 0;
   ComputeNearestTile(x, y, &row, &column);
-  int next_row = row + dir.Y;
-  int next_column = column + dir.X;
-  bool succeed = IsTileWalkable(next_row, next_column);
+  bool succeed = IsTileWalkable(row, column);
   return succeed;
 }
 
