@@ -4,6 +4,7 @@
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
 #include "game/object.hh"
+#include "global.hh"
 
 #include <cmath>
 #include <vector>
@@ -104,6 +105,10 @@ void Maze::Draw(SDL_Renderer* renderer) {
       SetTileSrcLoc(1, tile_index, &src);
       SetTileDstLoc(i, &dst);
       SDL_RenderTexture(renderer, _sprite_sheet.GetTexture(), &src, &dst);
+#if DEBUG_DRAW
+      SDL_SetRenderDrawColorFloat(renderer, 0, 1, 0, 1);
+      SDL_RenderRect(renderer, &dst);
+#endif
     }
   }
 }

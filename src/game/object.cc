@@ -23,6 +23,10 @@ void Object::Draw(SDL_Renderer* renderer) {
   dst.x = _pos.X - dst.w / 2;
   dst.y = _pos.Y - dst.h / 2;
   SDL_RenderTexture(renderer, _texture.GetTexture(), NULL, &dst);
+#if DEBUG_DRAW
+  SDL_SetRenderDrawColorFloat(renderer, 1, 0, 0, 1);
+  SDL_RenderPoint(renderer, _pos.X, _pos.Y);
+#endif
 }
 
 void Object::Update(double delta) {
