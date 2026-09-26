@@ -7,8 +7,13 @@ class Maze {
 public:
   auto Init() -> bool;
   void Draw(class SDL_Renderer* renderer);
-  [[nodiscard]] auto CanMove(Position const& src, Position const& dst) const
-      -> bool;
+
+  /**
+   * Return if an object can move from `src` to `dst`. Also fix `dst` if
+   * necessary.
+   */
+  [[nodiscard]] auto CanMove(Position const& src, Position& dst,
+                             Direction const& dir) const -> bool;
   void SetToStart(class Object* obj);
 
 private:

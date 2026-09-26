@@ -48,7 +48,7 @@ void Object::Update(double delta) {
     Position dst = _pos;
     dst.X += _dir.X * dist_delta;
     dst.Y += _dir.Y * dist_delta;
-    if (maze->CanMove(_pos, dst)) {
+    if (maze->CanMove(_pos, dst, _dir)) {
       _pos = dst;
     }
   }
