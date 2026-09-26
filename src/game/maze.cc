@@ -138,23 +138,27 @@ auto Maze::CanMove(Position const& src, Position& dst,
   int next_row = row + dir.Y;
   int next_column = column + dir.X;
   bool IsNextWalkable = IsTileWalkable(next_row, next_column);
+  Position this_center = ComputeTileCenter(row, column);
   // if next is not walkable and we are moving past the current center, then
   // pull back
   if (!IsNextWalkable) {
-    Position this_center = ComputeTileCenter(row, column);
-    if (dir.X != 0 && dir.X * (this_center.X - dst.X) < 0) {
-      dst.X = TILE_SIZE / 2 + TILE_SIZE * column;
+    if (dir.X != 0 && dir.X * (this_center.X - dst.X) <= 0) {
+      dst.X = this_center.X;
+      succeed = false;
     }
-    else if (dir.Y != 0 && dir.Y * (this_center.Y - dst.Y) < 0) {
-      dst.Y = TILE_SIZE / 2 + TILE_SIZE * row;
+    else if (dir.Y != 0 && dir.Y * (this_center.Y - dst.Y) <= 0) {
+      dst.Y = this_center.Y;
+      succeed = false;
     }
   }
-  // if we are moving on X axis, then pull back on Y. Vice versa.
-  if (dir.X != 0) {
-    dst.Y = TILE_SIZE / 2 + TILE_SIZE * row;
-  }
-  else if (dir.Y != 0) {
-    dst.X = TILE_SIZE / 2 + TILE_SIZE * column;
+  if (succeed) {
+    // if we are moving on X axis, then pull back on Y. Vice versa.
+    if (dir.X != 0) {
+      dst.Y = this_center.Y;
+    }
+    else if (dir.Y != 0) {
+      dst.X = this_center.X;
+    }
   }
   return succeed;
 }

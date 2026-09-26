@@ -30,26 +30,34 @@ void Object::Draw(SDL_Renderer* renderer) {
 }
 
 void Object::Update(double delta) {
+  Direction new_dir = _dir;
   if (InputHandler::IsKeyDown(SDL_SCANCODE_W)) {
-    _dir = {0, -1};
+    new_dir = {0, -1};
   }
   if (InputHandler::IsKeyDown(SDL_SCANCODE_S)) {
-    _dir = {0, 1};
+    new_dir = {0, 1};
   }
   if (InputHandler::IsKeyDown(SDL_SCANCODE_A)) {
-    _dir = {-1, 0};
+    new_dir = {-1, 0};
   }
   if (InputHandler::IsKeyDown(SDL_SCANCODE_D)) {
-    _dir = {1, 0};
+    new_dir = {1, 0};
   }
   if (auto* maze = gGameInstance->GetMaze()) {
     constexpr double SPEED = 32;
     double dist_delta = delta * SPEED;
     Position dst = _pos;
-    dst.X += _dir.X * dist_delta;
-    dst.Y += _dir.Y * dist_delta;
-    if (maze->CanMove(_pos, dst, _dir)) {
+    dst.MoveAlongDirection(new_dir, dist_delta);
+    if (maze->CanMove(_pos, dst, new_dir)) {
       _pos = dst;
+      _dir = new_dir;
+    }
+    else if (new_dir != _dir) { // try the old dir if they are different
+      dst = _pos;
+      dst.MoveAlongDirection(_dir, dist_delta);
+      if (maze->CanMove(_pos, dst, _dir)) {
+        _pos = dst;
+      }
     }
   }
 }
