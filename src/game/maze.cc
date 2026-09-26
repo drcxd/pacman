@@ -94,6 +94,22 @@ auto ComputeTileCenter(int row, int column) -> Position {
   return {TILE_SIZE / 2.0F + column * TILE_SIZE,
           TILE_SIZE / 2.0F + row * TILE_SIZE};
 }
+
+auto MoveTowards(float src, float dst, float delta) -> float {
+  if (src < dst) {
+    src += delta;
+    if (src > dst) {
+      src = dst;
+    }
+  }
+  else {
+    src -= delta;
+    if (src < dst) {
+      src = dst;
+    }
+  }
+  return src;
+}
 } // namespace
 
 auto Maze::Init() -> bool {
@@ -125,11 +141,12 @@ void Maze::Draw(SDL_Renderer* renderer) {
   }
 }
 
-auto Maze::CanMove(Position const& src, Position& dst,
-                   Direction const& dir) const -> bool {
+auto Maze::CanMove(Position& src, Direction const& dir, float delta) const
+    -> bool {
+  src.MoveAlongDirection(dir, delta);
   // determine the current tile:
-  int x = std::lround(dst.X);
-  int y = std::lround(dst.Y);
+  int x = std::lround(src.X);
+  int y = std::lround(src.Y);
   // find the nearest tile
   int row = 0;
   int column = 0;
@@ -142,27 +159,28 @@ auto Maze::CanMove(Position const& src, Position& dst,
   // if next is not walkable and we are moving past the current center, then
   // pull back
   if (!IsNextWalkable) {
-    if (dir.X != 0 && dir.X * (this_center.X - dst.X) <= 0) {
-      dst.X = this_center.X;
+    if (dir.X != 0 && dir.X * (this_center.X - src.X) <= 0) {
+      src.X = this_center.X;
       succeed = false;
     }
-    else if (dir.Y != 0 && dir.Y * (this_center.Y - dst.Y) <= 0) {
-      dst.Y = this_center.Y;
+    else if (dir.Y != 0 && dir.Y * (this_center.Y - src.Y) <= 0) {
+      src.Y = this_center.Y;
       succeed = false;
     }
   }
+
   if (succeed) {
     // if we are moving on X axis, then pull back on Y. Vice versa.
     if (dir.X != 0) {
-      dst.Y = this_center.Y;
+      src.Y = MoveTowards(src.Y, this_center.Y, delta);
     }
     else if (dir.Y != 0) {
-      dst.X = this_center.X;
+      src.X = MoveTowards(src.X, this_center.X, delta);
     }
   }
   return succeed;
 }
 
 void Maze::SetToStart(Object* obj) {
-  obj->SetPosition({4 + 13 * TILE_SIZE, 4 + 23 * TILE_SIZE});
+  obj->SetPosition({14 * TILE_SIZE, 4 + 23 * TILE_SIZE});
 }

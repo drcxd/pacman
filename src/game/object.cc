@@ -47,15 +47,13 @@ void Object::Update(double delta) {
     constexpr double SPEED = 32;
     double dist_delta = delta * SPEED;
     Position dst = _pos;
-    dst.MoveAlongDirection(new_dir, dist_delta);
-    if (maze->CanMove(_pos, dst, new_dir)) {
+    if (maze->CanMove(dst, new_dir, dist_delta)) {
       _pos = dst;
       _dir = new_dir;
     }
     else if (new_dir != _dir) { // try the old dir if they are different
       dst = _pos;
-      dst.MoveAlongDirection(_dir, dist_delta);
-      if (maze->CanMove(_pos, dst, _dir)) {
+      if (maze->CanMove(dst, _dir, dist_delta)) {
         _pos = dst;
       }
     }

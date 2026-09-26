@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 struct Direction {
   char X = -1;
   char Y = 0;
@@ -21,5 +23,9 @@ struct Position {
     X += dir.X * dist;
     Y += dir.Y * dist;
   }
-};
 
+  auto Distance(Position const& other) {
+    return std::sqrt((other.X - X) * (other.X - X) +
+                     (other.Y - Y) * (other.Y - Y));
+  }
+};

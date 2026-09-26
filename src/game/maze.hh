@@ -6,14 +6,19 @@
 class Maze {
 public:
   auto Init() -> bool;
+
   void Draw(class SDL_Renderer* renderer);
 
   /**
-   * Return if an object can move from `src` to `dst`. Also fix `dst` if
-   * necessary.
+   * Return if an object can move `delta` units from `src` along `dir`. If
+   * succeed, the corrected destination is passed back through `src`.
    */
-  [[nodiscard]] auto CanMove(Position const& src, Position& dst,
-                             Direction const& dir) const -> bool;
+  [[nodiscard]] auto CanMove(Position& src, Direction const& dir,
+                             float delta) const -> bool;
+
+  /**
+   * Set `obj` to the player start location.
+   */
   void SetToStart(class Object* obj);
 
 private:
