@@ -18,15 +18,15 @@ auto Object::Init(std::string_view texture_path) -> bool {
 void Object::Draw(SDL_Renderer* renderer) {
   SDL_FRect dst;
   // TODO: remove constant
-  dst.w = 8;
-  dst.h = 8;
+  dst.w = 16;
+  dst.h = 16;
   dst.x = _pos.X - dst.w / 2;
   dst.y = _pos.Y - dst.h / 2;
   SDL_RenderTexture(renderer, _texture.GetTexture(), NULL, &dst);
-#if DEBUG_DRAW
-  SDL_SetRenderDrawColorFloat(renderer, 1, 0, 0, 1);
-  SDL_RenderPoint(renderer, _pos.X, _pos.Y);
-#endif
+  if (gGameInstance->DebugDraw()) {
+    SDL_SetRenderDrawColorFloat(renderer, 1, 0, 0, 1);
+    SDL_RenderPoint(renderer, _pos.X, _pos.Y);
+  }
 }
 
 void Object::Update(double delta) {

@@ -36,9 +36,8 @@ auto SDL_AppEvent(void* /*appstate*/, SDL_Event* event) -> SDL_AppResult {
   if (event->type == SDL_EVENT_QUIT) {
     return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
   }
-  else if (event->type == SDL_EVENT_KEY_DOWN &&
-           event->key.scancode == SDL_SCANCODE_ESCAPE) {
-    return SDL_APP_SUCCESS;
+  else if (event->type == SDL_EVENT_KEY_DOWN) {
+    return gGameInstance->OnKeyDown(event->key);
   }
   return SDL_APP_CONTINUE;
 }

@@ -3,6 +3,7 @@
 #include "SDL3/SDL_log.h"
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
+#include "base/game_instance.hh"
 #include "game/object.hh"
 #include "global.hh"
 
@@ -101,14 +102,20 @@ void Maze::Draw(SDL_Renderer* renderer) {
   dst.h = dst.w = TILE_SIZE;
   for (int i = 0; i < tiles.size(); ++i) {
     int tile_index = tiles[i];
+    SetTileDstLoc(i, &dst);
     if (tile_index >= 0) {
       SetTileSrcLoc(1, tile_index, &src);
-      SetTileDstLoc(i, &dst);
       SDL_RenderTexture(renderer, _sprite_sheet.GetTexture(), &src, &dst);
-#if DEBUG_DRAW
-      SDL_SetRenderDrawColorFloat(renderer, 0, 1, 0, 1);
-      SDL_RenderRect(renderer, &dst);
-#endif
+      if (gGameInstance->DebugDraw()) {
+        SDL_SetRenderDrawColorFloat(renderer, 1, 0, 0, 1);
+        SDL_RenderRect(renderer, &dst);
+      }
+    }
+    else {
+      if (gGameInstance->DebugDraw()) {
+        SDL_SetRenderDrawColorFloat(renderer, 0, 1, 0, 1);
+        SDL_RenderRect(renderer, &dst);
+      }
     }
   }
 }

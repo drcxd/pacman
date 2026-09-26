@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SDL3/SDL_init.h"
 #include <string_view>
 #include <string>
 
@@ -48,6 +49,10 @@ public:
    */
   [[nodiscard]] auto GetMinFrameTime() const -> double;
 
+  [[nodiscard]] auto DebugDraw() const -> bool { return _debug_draw; }
+
+  auto OnKeyDown(SDL_KeyboardEvent const& event) -> SDL_AppResult;
+
 private:
   auto InitPlayer(std::string_view texture_path) -> bool;
   auto InitMaze() -> bool;
@@ -62,6 +67,7 @@ private:
   SDL_Window* _window = nullptr;
 
   bool _error = false;
+  bool _debug_draw = false;
 
   Timer _timer;
 

@@ -93,3 +93,12 @@ auto GameInstance::GetMinFrameTime() const -> double {
   return 1.0 / max_fps;
 }
 
+auto GameInstance::OnKeyDown(SDL_KeyboardEvent const& event) -> SDL_AppResult {
+  if (event.scancode == SDL_SCANCODE_ESCAPE) {
+    return SDL_APP_SUCCESS;
+  }
+  if (event.scancode == SDL_SCANCODE_T) {
+    _debug_draw = !_debug_draw;
+  }
+  return SDL_APP_CONTINUE;
+}
