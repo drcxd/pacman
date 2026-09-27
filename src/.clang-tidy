@@ -11,6 +11,7 @@ Checks:
   - misc-*
   - modernize-*
   - performance-*
+  - readability-*
 WarningsAsErrors: ''
 HeaderFileExtensions:
   - ''
