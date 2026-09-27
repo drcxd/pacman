@@ -4,6 +4,7 @@
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
 #include "base/game_instance.hh"
+#include "base/math.hh"
 #include "game/object.hh"
 #include "global.hh"
 
@@ -17,6 +18,8 @@ constexpr int TILE_SIZE = 8;
 constexpr int SHEET_COLUMN = 16;
 constexpr int TILE_MARGIN = 1;
 constexpr int TILE_START_X = 224;
+constexpr int MAZE_WIDTH = TILE_SIZE * MAZE_COLUMN;
+constexpr int MAZE_HEIGHT = TILE_SIZE * MAZE_ROW;
 // clang-format off
 const std::vector<int> tiles = {
     01, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 43, 42, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 00,
@@ -80,7 +83,6 @@ void ComputeNearestTile(int x, int y, int* row, int* column) {
 
 auto IsTileWalkable(int row, int column) -> bool {
   bool ret = false;
-  // TODO: when implementing the teleport feature, we need to change this.
   if (0 <= column && column < MAZE_COLUMN && 0 <= row && row < MAZE_ROW) {
     int index = row * MAZE_COLUMN + column;
     if (0 <= index && index <= tiles.size()) {
@@ -139,14 +141,34 @@ void Maze::Draw(SDL_Renderer* renderer) {
       }
     }
   }
+  if (gGameInstance->TruncateLocation()) {
+    SDL_SetRenderDrawColorFloat(renderer, 0, 1, 0, 1);
+    SDL_RenderPoint(renderer, MAZE_WIDTH / 2, MAZE_HEIGHT / 2);
+  }
 }
 
 auto Maze::CanMove(Position& src, Direction const& dir, float delta) const
     -> bool {
+  Position old_src = src;
   src.MoveAlongDirection(dir, delta);
-  // determine the current tile:
-  int x = std::lround(src.X);
-  int y = std::lround(src.Y);
+  // round trip if we are moving across the boundary
+  if (old_src.X >= 0 && src.X < 0 ||
+      old_src.X < MAZE_WIDTH && src.X >= MAZE_WIDTH) {
+    float new_x = modf(src.X, MAZE_WIDTH);
+    src.X = new_x;
+
+    // NOTE: If rounding the position to integers, we have to return here after
+    // teleporting, because rounding would produce undesired tile result after
+    // teleporting.
+    if (!gGameInstance->TruncateLocation()) {
+      return true;
+    }
+  }
+  // NOTE: Determine the current tile. We may truncating or rounding to
+  // integer. Rounding produces undesired result after teleporting. Not sure
+  // about how these two solutions affect movement in general, though.
+  int x = gGameInstance->TruncateLocation() ? src.X : std::lround(src.X);
+  int y = gGameInstance->TruncateLocation() ? src.Y : std::lround(src.Y);
   // find the nearest tile
   int row = 0;
   int column = 0;
@@ -154,10 +176,10 @@ auto Maze::CanMove(Position& src, Direction const& dir, float delta) const
   bool succeed = IsTileWalkable(row, column);
   int next_row = row + dir.Y;
   int next_column = column + dir.X;
+  next_column = mod(next_column, MAZE_COLUMN);
   bool IsNextWalkable = IsTileWalkable(next_row, next_column);
   Position this_center = ComputeTileCenter(row, column);
-  // if next is not walkable and we are moving past the current center, then
-  // pull back
+  // pull back if next is not walkable and we are moving past the current center
   if (!IsNextWalkable) {
     if (dir.X != 0 && dir.X * (this_center.X - src.X) <= 0) {
       src.X = this_center.X;

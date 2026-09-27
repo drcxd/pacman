@@ -51,6 +51,10 @@ public:
 
   [[nodiscard]] auto DebugDraw() const -> bool { return _debug_draw; }
 
+  [[nodiscard]] auto TruncateLocation() const -> bool {
+    return _truncate_location;
+  }
+
   auto OnKeyDown(SDL_KeyboardEvent const& event) -> SDL_AppResult;
 
 private:
@@ -68,6 +72,7 @@ private:
 
   bool _error = false;
   bool _debug_draw = false;
+  bool _truncate_location = false;
 
   Timer _timer;
 

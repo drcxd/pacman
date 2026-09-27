@@ -100,5 +100,8 @@ auto GameInstance::OnKeyDown(SDL_KeyboardEvent const& event) -> SDL_AppResult {
   if (event.scancode == SDL_SCANCODE_T) {
     _debug_draw = !_debug_draw;
   }
+  if (event.scancode == SDL_SCANCODE_R) {
+    _truncate_location = !_truncate_location;
+  }
   return SDL_APP_CONTINUE;
 }
