@@ -7,6 +7,7 @@
 #include "base/math.hh"
 #include "game/object.hh"
 
+#include <algorithm>
 #include <cmath>
 #include <vector>
 
@@ -75,9 +76,9 @@ void SetTileDstLoc(int index, SDL_FRect* loc) {
   loc->y = y;
 }
 
-void ComputeNearestTile(int x, int y, int* row, int* column) {
-  *row = y / TILE_SIZE;
-  *column = x / TILE_SIZE;
+void ComputeNearestTile(Position pos, int* row, int* column) {
+  *row = static_cast<int>(pos.Y / TILE_SIZE);
+  *column = static_cast<int>(pos.X / TILE_SIZE);
 }
 
 auto IsTileWalkable(int row, int column) -> bool {
@@ -99,15 +100,11 @@ auto ComputeTileCenter(int row, int column) -> Position {
 auto MoveTowards(float src, float dst, float delta) -> float {
   if (src < dst) {
     src += delta;
-    if (src > dst) {
-      src = dst;
-    }
+    src = std::min(src, dst);
   }
   else {
     src -= delta;
-    if (src < dst) {
-      src = dst;
-    }
+    src = std::max(src, dst);
   }
   return src;
 }
@@ -157,23 +154,11 @@ auto Maze::CanMove(Position& src, Direction const& dir, float delta) const
       old_src.X < MAZE_WIDTH && src.X >= MAZE_WIDTH) {
     auto new_x = mod<float>(src.X, MAZE_WIDTH);
     src.X = new_x;
-
-    // NOTE: If rounding the position to integers, we have to return here after
-    // teleporting, because rounding would produce undesired tile result after
-    // teleporting.
-    if (truncate) {
-      return true;
-    }
   }
-  // NOTE: Determine the current tile. We may truncating or rounding to
-  // integer. Rounding produces undesired result after teleporting. Not sure
-  // about how these two solutions affect movement in general, though.
-  int x = truncate ? src.X : std::lround(src.X);
-  int y = truncate ? src.Y : std::lround(src.Y);
   // find the nearest tile
   int row = 0;
   int column = 0;
-  ComputeNearestTile(x, y, &row, &column);
+  ComputeNearestTile(src, &row, &column);
   bool succeed = IsTileWalkable(row, column);
   int next_row = row + dir.Y;
   int next_column = column + dir.X;
