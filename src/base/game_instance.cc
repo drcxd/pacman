@@ -45,15 +45,14 @@ GameInstance::~GameInstance() {
 auto GameInstance::Init() -> bool {
   std::string player_texture;
   if (_settings.GetConfigValue("player_texture", &player_texture)) {
-    bool succeed = InitPlayer(player_texture) && InitMaze();
-    if (succeed) {
-      _maze->SetToStart(_player);
+    if (_texture_manager.Init()) {
+      if (InitPlayer(player_texture) && InitMaze()) {
+        _maze->SetToStart(_player);
+        return true;
+      }
     }
-    return succeed;
   }
-  else {
-    return false;
-  }
+  return false;
 }
 
 void GameInstance::Update(double delta) {
@@ -65,9 +64,7 @@ void GameInstance::GameInstance::Draw(class SDL_Renderer* renderer)  {
   _player->Draw(renderer);
 }
 
-auto GameInstance::GetPlayerObject() -> Object* {
-  return _player;
-}
+auto GameInstance::GetPlayerObject() -> Object* { return _player; }
 
 auto GameInstance::InitPlayer(std::string_view texture_path) -> bool {
   _player = new Object();

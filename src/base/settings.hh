@@ -15,7 +15,7 @@ public:
   auto GetConfigValue(std::string_view key, T* value) const -> bool {
     if (!_configs.is_discarded()) {
       try {
-        *value = _configs.at(key.data());
+        *value = _configs.at(key.data()).get<T>();
       }
       catch (nlohmann::json::out_of_range& e) {
         SDL_Log("Invalid key in JSON file: %s", key.data());

@@ -6,6 +6,7 @@
 
 #include <base/timer.hh>
 #include <base/settings.hh>
+#include <base/texture_manager.hh>
 
 class Object;
 class Maze;
@@ -30,7 +31,9 @@ public:
 
   auto GetPlayerObject() -> Object*;
 
-  auto GetMaze() -> Maze const* { return _maze; }
+  [[nodiscard]] auto GetMaze() const -> Maze const* { return _maze; }
+
+  [[nodiscard]] auto GetSettings() const -> Settings const& { return _settings; }
 
   [[nodiscard]] auto GetTimer() const -> Timer const& { return _timer; }
 
@@ -62,6 +65,7 @@ private:
   auto InitMaze() -> bool;
 
   Settings _settings;
+  TextureManager _texture_manager;
 
   std::string _title;
   int _width = 0;

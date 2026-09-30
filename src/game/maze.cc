@@ -154,7 +154,7 @@ auto Maze::CanMove(Position& src, Direction const& dir, float delta) const
   // round trip if we are moving across the boundary
   if (old_src.X >= 0 && src.X < 0 ||
       old_src.X < MAZE_WIDTH && src.X >= MAZE_WIDTH) {
-    float new_x = modf(src.X, MAZE_WIDTH);
+    auto new_x = mod<float>(src.X, MAZE_WIDTH);
     src.X = new_x;
 
     // NOTE: If rounding the position to integers, we have to return here after
@@ -176,7 +176,7 @@ auto Maze::CanMove(Position& src, Direction const& dir, float delta) const
   bool succeed = IsTileWalkable(row, column);
   int next_row = row + dir.Y;
   int next_column = column + dir.X;
-  next_column = mod(next_column, MAZE_COLUMN);
+  next_column = mod<int>(next_column, MAZE_COLUMN);
   bool IsNextWalkable = IsTileWalkable(next_row, next_column);
   Position this_center = ComputeTileCenter(row, column);
   // pull back if next is not walkable and we are moving past the current center
