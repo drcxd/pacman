@@ -5,10 +5,12 @@
 /**
  * Return z = `x` % `y` so that z is non negative.
  */
-auto mod(int x, int y) -> int {
-  return ((x % y) + y) % y;
-}
-
-auto modf(float x, float y) -> float {
-  return fmod(fmod(x, y) + y, y);
+template<typename T>
+auto mod(T x, T y) -> T {
+  if constexpr (std::is_integral_v<T>) {
+    return ((x % y) + y) % y;
+  }
+  else {
+    return fmod(fmod(x, y) + y, y);
+  }
 }
