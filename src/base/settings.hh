@@ -7,10 +7,19 @@
 
 class Settings {
 public:
+  Settings(Settings const&) = delete;
+  Settings(Settings&&) = delete;
+  auto operator=(Settings const&) -> Settings& = delete;
+  auto operator=(Settings&&) -> Settings& = delete;
+  ~Settings() = default;
+
+  static auto Get() -> Settings& {
+    static Settings inst;
+    return inst;
+  }
+
   auto Init(std::string_view file) -> bool;
-  /**
-   * Returns a
-   */
+
   template <typename T>
   auto GetConfigValue(std::string_view key, T* value) const -> bool {
     if (!_configs.is_discarded()) {
@@ -29,5 +38,7 @@ public:
   }
 
 private:
+  Settings() = default;
+
   nlohmann::json _configs;
 };

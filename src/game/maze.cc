@@ -6,7 +6,6 @@
 #include "base/game_instance.hh"
 #include "base/math.hh"
 #include "game/object.hh"
-#include "global.hh"
 
 #include <algorithm>
 #include <cmath>
@@ -120,25 +119,26 @@ void Maze::Draw(SDL_Renderer* renderer) {
   src.h = src.w = TILE_SIZE;
   SDL_FRect dst;
   dst.h = dst.w = TILE_SIZE;
+  bool debug = GameInstance::Get().DebugDraw();
   for (int i = 0; i < tiles.size(); ++i) {
     int tile_index = tiles[i];
     SetTileDstLoc(i, &dst);
     if (tile_index >= 0) {
       SetTileSrcLoc(1, tile_index, &src);
       SDL_RenderTexture(renderer, _sprite_sheet.GetTexture(), &src, &dst);
-      if (gGameInstance->DebugDraw()) {
+      if (debug) {
         SDL_SetRenderDrawColorFloat(renderer, 1, 0, 0, 1);
         SDL_RenderRect(renderer, &dst);
       }
     }
     else {
-      if (gGameInstance->DebugDraw()) {
+      if (debug) {
         SDL_SetRenderDrawColorFloat(renderer, 0, 1, 0, 1);
         SDL_RenderRect(renderer, &dst);
       }
     }
   }
-  if (gGameInstance->TruncateLocation()) {
+  if (GameInstance::Get().TruncateLocation()) {
     SDL_SetRenderDrawColorFloat(renderer, 0, 1, 0, 1);
     SDL_RenderPoint(renderer, MAZE_WIDTH / 2, MAZE_HEIGHT / 2);
   }
@@ -148,6 +148,7 @@ auto Maze::CanMove(Position& src, Direction const& dir, float delta) const
     -> bool {
   Position old_src = src;
   src.MoveAlongDirection(dir, delta);
+  bool truncate = GameInstance::Get().TruncateLocation();
   // round trip if we are moving across the boundary
   if (old_src.X >= 0 && src.X < 0 ||
       old_src.X < MAZE_WIDTH && src.X >= MAZE_WIDTH) {
