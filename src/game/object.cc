@@ -5,7 +5,6 @@
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
 
-#include "global.hh"
 #include "base/game_instance.hh"
 #include "game/input_handler.hh"
 #include "game/maze.hh"
@@ -23,7 +22,7 @@ void Object::Draw(SDL_Renderer* renderer) {
   dst.x = _pos.X - dst.w / 2;
   dst.y = _pos.Y - dst.h / 2;
   SDL_RenderTexture(renderer, _texture.GetTexture(), NULL, &dst);
-  if (gGameInstance->DebugDraw()) {
+  if (GameInstance::Get().DebugDraw()) {
     SDL_SetRenderDrawColorFloat(renderer, 1, 0, 0, 1);
     SDL_RenderPoint(renderer, _pos.X, _pos.Y);
   }
@@ -43,7 +42,7 @@ void Object::Update(double delta) {
   if (InputHandler::IsKeyDown(SDL_SCANCODE_D)) {
     new_dir = {1, 0};
   }
-  if (auto* maze = gGameInstance->GetMaze()) {
+  if (auto* maze = GameInstance::Get().GetMaze()) {
     constexpr double SPEED = 32;
     double dist_delta = delta * SPEED;
     Position dst = _pos;

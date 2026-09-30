@@ -5,25 +5,29 @@
 #include <string>
 
 #include <base/timer.hh>
-#include <base/settings.hh>
-#include <base/texture_manager.hh>
 
 class Object;
 class Maze;
 
 class GameInstance {
 public:
-  explicit GameInstance(std::string_view config);
+  static auto Get() -> GameInstance& {
+    static GameInstance inst;
+    return inst;
+  }
+  GameInstance(GameInstance const&) = delete;
+  GameInstance(GameInstance&&) = delete;
+  auto operator=(GameInstance const&) -> GameInstance& = delete;
+  auto operator=(GameInstance&&) -> GameInstance& = delete;
   ~GameInstance();
 
   auto GetRenderer() -> class SDL_Renderer* { return _renderer; }
   auto GetWindow() -> class SDL_Window* { return _window; }
-  auto IsError() -> bool { return _error; }
 
   /**
    * Initialize game logic.
    */
-  auto Init() -> bool;
+  auto Init(std::string_view config) -> bool;
 
   void Update(double delta);
 
@@ -32,8 +36,6 @@ public:
   auto GetPlayerObject() -> Object*;
 
   [[nodiscard]] auto GetMaze() const -> Maze const* { return _maze; }
-
-  [[nodiscard]] auto GetSettings() const -> Settings const& { return _settings; }
 
   [[nodiscard]] auto GetTimer() const -> Timer const& { return _timer; }
 
@@ -60,12 +62,12 @@ public:
 
   auto OnKeyDown(SDL_KeyboardEvent const& event) -> SDL_AppResult;
 
+  void IncFrame() { ++_frame_number; }
+
 private:
+  GameInstance() = default;
   auto InitPlayer(std::string_view texture_path) -> bool;
   auto InitMaze() -> bool;
-
-  Settings _settings;
-  TextureManager _texture_manager;
 
   std::string _title;
   int _width = 0;
@@ -74,11 +76,11 @@ private:
   SDL_Renderer* _renderer = nullptr;
   SDL_Window* _window = nullptr;
 
-  bool _error = false;
   bool _debug_draw = false;
   bool _truncate_location = false;
 
   Timer _timer;
+  long long _frame_number = 0;
 
   Object* _player = nullptr;
   Maze* _maze = nullptr;

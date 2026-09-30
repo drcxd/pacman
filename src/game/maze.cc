@@ -6,7 +6,6 @@
 #include "base/game_instance.hh"
 #include "base/math.hh"
 #include "game/object.hh"
-#include "global.hh"
 
 #include <cmath>
 #include <vector>
@@ -123,25 +122,26 @@ void Maze::Draw(SDL_Renderer* renderer) {
   src.h = src.w = TILE_SIZE;
   SDL_FRect dst;
   dst.h = dst.w = TILE_SIZE;
+  bool debug = GameInstance::Get().DebugDraw();
   for (int i = 0; i < tiles.size(); ++i) {
     int tile_index = tiles[i];
     SetTileDstLoc(i, &dst);
     if (tile_index >= 0) {
       SetTileSrcLoc(1, tile_index, &src);
       SDL_RenderTexture(renderer, _sprite_sheet.GetTexture(), &src, &dst);
-      if (gGameInstance->DebugDraw()) {
+      if (debug) {
         SDL_SetRenderDrawColorFloat(renderer, 1, 0, 0, 1);
         SDL_RenderRect(renderer, &dst);
       }
     }
     else {
-      if (gGameInstance->DebugDraw()) {
+      if (debug) {
         SDL_SetRenderDrawColorFloat(renderer, 0, 1, 0, 1);
         SDL_RenderRect(renderer, &dst);
       }
     }
   }
-  if (gGameInstance->TruncateLocation()) {
+  if (GameInstance::Get().TruncateLocation()) {
     SDL_SetRenderDrawColorFloat(renderer, 0, 1, 0, 1);
     SDL_RenderPoint(renderer, MAZE_WIDTH / 2, MAZE_HEIGHT / 2);
   }
@@ -151,6 +151,7 @@ auto Maze::CanMove(Position& src, Direction const& dir, float delta) const
     -> bool {
   Position old_src = src;
   src.MoveAlongDirection(dir, delta);
+  bool truncate = GameInstance::Get().TruncateLocation();
   // round trip if we are moving across the boundary
   if (old_src.X >= 0 && src.X < 0 ||
       old_src.X < MAZE_WIDTH && src.X >= MAZE_WIDTH) {
@@ -160,15 +161,15 @@ auto Maze::CanMove(Position& src, Direction const& dir, float delta) const
     // NOTE: If rounding the position to integers, we have to return here after
     // teleporting, because rounding would produce undesired tile result after
     // teleporting.
-    if (!gGameInstance->TruncateLocation()) {
+    if (truncate) {
       return true;
     }
   }
   // NOTE: Determine the current tile. We may truncating or rounding to
   // integer. Rounding produces undesired result after teleporting. Not sure
   // about how these two solutions affect movement in general, though.
-  int x = gGameInstance->TruncateLocation() ? src.X : std::lround(src.X);
-  int y = gGameInstance->TruncateLocation() ? src.Y : std::lround(src.Y);
+  int x = truncate ? src.X : std::lround(src.X);
+  int y = truncate ? src.Y : std::lround(src.Y);
   // find the nearest tile
   int row = 0;
   int column = 0;

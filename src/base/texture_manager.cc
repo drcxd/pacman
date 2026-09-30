@@ -1,10 +1,9 @@
 #include "texture_manager.hh"
 
-#include "game_instance.hh"
-#include "global.hh"
+#include "base/settings.hh"
 
 auto TextureManager::Init() -> bool {
-  auto const& settings = gGameInstance->GetSettings();
+  auto const& settings = Settings::Get();
   std::unordered_map<std::string, std::string> textures;
   if (settings.GetConfigValue("textures", &textures)) {
     for (auto const& pair : textures) {

@@ -4,7 +4,6 @@
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_surface.h"
 
-#include <global.hh>
 #include <base/game_instance.hh>
 
 auto Texture::Init(std::string_view path) -> bool {
@@ -12,7 +11,7 @@ auto Texture::Init(std::string_view path) -> bool {
     _width = surface->w;
     _height = surface->h;
     _texture =
-        SDL_CreateTextureFromSurface(gGameInstance->GetRenderer(), surface);
+      SDL_CreateTextureFromSurface(GameInstance::Get().GetRenderer(), surface);
     if (_texture == nullptr) {
       SDL_Log("Can not create texture: %s", SDL_GetError());
     }
