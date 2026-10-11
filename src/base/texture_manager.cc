@@ -9,7 +9,7 @@ auto TextureManager::Init() -> bool {
     for (auto const& pair : textures) {
       Texture t;
       if (t.Init(pair.second)) {
-        _textures.insert({pair.first, t});
+        _textures.insert({pair.first, std::move(t)});
       }
     }
   }
