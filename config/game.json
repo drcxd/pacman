@@ -7,5 +7,16 @@
     "textures": {
         "maze": "assets/sprites/maze_fix.png",
         "char": "assets/sprites/general.png"
+    },
+    "sprite_animations": {
+        "pacman-right": {
+            "texture_name": "char",
+            "frame_per_second": 0.5,
+            "frames": [
+                [456, 0, 15, 15],
+                [472, 0, 15, 15],
+                [488, 0, 15, 15]
+            ]
+        }
     }
 }

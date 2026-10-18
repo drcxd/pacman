@@ -1,9 +1,12 @@
 #pragma once
 
 #include <string_view>
+#include <optional>
 
 #include <json.hpp>
 #include "SDL3/SDL_log.h"
+
+#include "configs.hh"
 
 class Settings {
 public:
@@ -32,10 +35,11 @@ public:
       }
       return true;
     }
-    else {
-      return false;
-    }
+    return false;
   }
+
+  [[nodiscard]] auto GetSpriteAnimationConfig(std::string_view name) const
+      -> std::optional<SpriteAnimationConfig>;
 
 private:
   Settings() = default;
