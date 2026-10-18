@@ -37,15 +37,13 @@ public:
 
   [[nodiscard]] auto GetMaze() const -> Maze const* { return _maze; }
 
-  [[nodiscard]] auto GetTimer() const -> Timer const& { return _timer; }
-
   /**
-   * Return the time since the game instance is created in seconds.
+   * Return the time since the game instance is created, in seconds.
    */
   [[nodiscard]] auto GetCurrentTime() const -> double;
 
   /**
-   * Return the time elapsed in seconds since last time the timer is set.
+   * Return the time elapsed in seconds since last time this function is called.
    */
   auto GetDelta() -> double;
 
