@@ -29,7 +29,7 @@ auto SDL_AppEvent(void* /*appstate*/, SDL_Event* event) -> SDL_AppResult {
   if (event->type == SDL_EVENT_QUIT) {
     return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
   }
-  else if (event->type == SDL_EVENT_KEY_DOWN) {
+  if (event->type == SDL_EVENT_KEY_DOWN) {
     return GameInstance::Get().OnKeyDown(event->key);
   }
   return SDL_APP_CONTINUE;
@@ -39,10 +39,9 @@ auto SDL_AppEvent(void* /*appstate*/, SDL_Event* event) -> SDL_AppResult {
 auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
   auto& game_instance = GameInstance::Get();
   double delta = game_instance.GetDelta();
+  double before = game_instance.GetCurrentTime();
 
   auto* renderer = game_instance.GetRenderer();
-  /* as you can see from this, rendering draws over whatever was drawn before
-   * it. */
   SDL_SetRenderDrawColor(renderer, 0, 0, 0,
                          SDL_ALPHA_OPAQUE); /* black, full alpha */
   SDL_RenderClear(renderer);                /* start with a blank canvas. */
@@ -54,9 +53,12 @@ auto SDL_AppIterate(void* /*appstate*/) -> SDL_AppResult {
   SDL_RenderPresent(renderer); /* put it all on the screen! */
 
   game_instance.IncFrame();
+  double after = game_instance.GetCurrentTime();
+  double this_frame_time = after - before;
   double const frame_time = game_instance.GetMinFrameTime();
-  if (delta < frame_time) {
-    SDL_Delay(static_cast<unsigned>((frame_time - delta) * 1000 + 0.5));
+  if (this_frame_time < frame_time) {
+    SDL_Delay(
+        static_cast<unsigned>((frame_time - this_frame_time) * 1000 + 0.5));
   }
   return SDL_APP_CONTINUE; /* carry on with the program! */
 }
