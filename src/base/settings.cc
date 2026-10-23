@@ -43,7 +43,7 @@ auto Settings::GetSpriteAnimationConfig(std::string_view name) const
             }
             else {
               SDL_Log("Frame animation config %s format error: frame "
-                      "description.");
+                      "description.", name.data());
             }
           }
 
