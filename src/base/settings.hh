@@ -33,6 +33,10 @@ public:
         SDL_Log("Invalid key in JSON file: %s", key.data());
         return false;
       }
+      catch (nlohmann::json::type_error& e) {
+        SDL_Log("Invalid value type in JSON file for key: %s", key.data());
+        return false;
+      }
       return true;
     }
     return false;
