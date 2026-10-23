@@ -33,12 +33,13 @@ auto Settings::GetSpriteAnimationConfig(std::string_view name) const
         if (frames != value.end() && texture_name != value.end() &&
             frame_per_second != value.end() && frames->is_array() &&
             texture_name->is_string() && frame_per_second->is_number()) {
-          std::vector<SDL_Rect> rects;
+          std::vector<SDL_FRect> rects;
           for (auto const& frame : *frames) {
             if (frame.size() >= 4 && frame[0].is_number() &&
                 frame[1].is_number() && frame[2].is_number() &&
                 frame[3].is_number()) {
-              rects.push_back(SDL_Rect{frame[0], frame[1], frame[2], frame[3]});
+              rects.push_back(
+                  SDL_FRect{frame[0], frame[1], frame[2], frame[3]});
             }
             else {
               SDL_Log("Frame animation config %s format error: frame "

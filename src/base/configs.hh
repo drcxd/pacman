@@ -8,5 +8,5 @@
 struct SpriteAnimationConfig {
   std::string TextureName;
   double FramePerSecond = 1;
-  std::vector<SDL_Rect> Frames;
+  std::vector<SDL_FRect> Frames;
 };

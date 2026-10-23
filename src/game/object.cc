@@ -10,8 +10,7 @@
 #include "game/maze.hh"
 
 auto Object::Init(std::string_view texture_path) -> bool {
-  _texture.Init(texture_path);
-  return _texture.IsReady();
+  return _animation.Init("pacman-right");
 }
 
 void Object::Draw(SDL_Renderer* renderer) {
@@ -21,7 +20,10 @@ void Object::Draw(SDL_Renderer* renderer) {
   dst.h = 16;
   dst.x = _pos.X - dst.w / 2;
   dst.y = _pos.Y - dst.h / 2;
-  SDL_RenderTexture(renderer, _texture.GetTexture(), NULL, &dst);
+
+  auto frame = _animation.GetCurrentFrame();
+  SDL_RenderTexture(renderer, frame.Texture->GetTexture(), &frame.Frame, &dst);
+
   if (GameInstance::Get().DebugDraw()) {
     SDL_SetRenderDrawColorFloat(renderer, 1, 0, 0, 1);
     SDL_RenderPoint(renderer, _pos.X, _pos.Y);
@@ -29,6 +31,7 @@ void Object::Draw(SDL_Renderer* renderer) {
 }
 
 void Object::Update(double delta) {
+  _animation.Update(delta);
   Direction new_dir = _dir;
   if (InputHandler::IsKeyDown(SDL_SCANCODE_W)) {
     new_dir = {0, -1};
@@ -42,7 +45,7 @@ void Object::Update(double delta) {
   if (InputHandler::IsKeyDown(SDL_SCANCODE_D)) {
     new_dir = {1, 0};
   }
-  if (auto* maze = GameInstance::Get().GetMaze()) {
+  if (auto const* maze = GameInstance::Get().GetMaze()) {
     constexpr double SPEED = 32;
     double dist_delta = delta * SPEED;
     Position dst = _pos;

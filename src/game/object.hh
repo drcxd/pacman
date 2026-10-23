@@ -2,7 +2,7 @@
 
 #include <string_view>
 
-#include <base/texture.hh>
+#include "base/sprite_animation.hh"
 #include <base/types.hh>
 
 class Object {
@@ -13,7 +13,7 @@ public:
   void Draw(struct SDL_Renderer* renderer);
   void SetPosition(Position pos) { _pos = pos; }
 private:
-  Texture _texture;
+  SpriteAnimation _animation;
   Position _pos;
   Direction _dir;
 };
