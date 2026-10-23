@@ -11,7 +11,7 @@
     "sprite_animations": {
         "pacman-right": {
             "texture_name": "char",
-            "frame_per_second": 0.5,
+            "frame_per_second": 9,
             "frames": [
                 [456, 0, 15, 15],
                 [472, 0, 15, 15],

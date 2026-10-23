@@ -22,10 +22,10 @@ public:
   auto operator=(Texture&&) -> Texture& = default;
 
   auto Init(std::string_view path) -> bool;
-  auto GetWidth() const -> int { return _width; }
-  auto GetHeight() const -> int { return _height; }
-  auto GetTexture() -> SDL_Texture* { return _texture.get(); }
-  auto IsReady() const -> bool { return _texture != nullptr; }
+  [[nodiscard]] auto GetWidth() const -> int { return _width; }
+  [[nodiscard]] auto GetHeight() const -> int { return _height; }
+  [[nodiscard]] auto GetTexture() const -> SDL_Texture* { return _texture.get(); }
+  [[nodiscard]] auto IsReady() const -> bool { return _texture != nullptr; }
 
 private:
   std::unique_ptr<SDL_Texture, TextureDeletor> _texture;
