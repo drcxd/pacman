@@ -62,6 +62,7 @@ end
 
 target("pacman")
     set_kind("binary")
+    set_languages("c++20")
     add_files("src/**.cpp")
     add_files("src/**.cc")
     add_packages(table.unpack(packages))
