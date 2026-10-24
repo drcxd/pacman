@@ -4,6 +4,7 @@ Checks:
   - clang-diagnostic-*
   - clang-analyzer-*
   - cppcoreguidelines-*
+  - -cppcoreguidelines-pro-type-vararg
   - google-explicit-constructor
   - google-readability-casting
   - google-default-arguments,
