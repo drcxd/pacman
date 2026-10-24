@@ -45,6 +45,9 @@ public:
   [[nodiscard]] auto GetSpriteAnimationConfig(std::string_view name) const
       -> std::optional<SpriteAnimationConfig>;
 
+  [[nodiscard]] auto GetObjectConfig(std::string_view name) const
+      -> std::optional<ObjectConfig>;
+
 private:
   Settings() = default;
 

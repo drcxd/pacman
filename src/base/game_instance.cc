@@ -18,6 +18,7 @@ GameInstance::~GameInstance() {
 
 auto GameInstance::Init(std::string_view config) -> bool {
   auto& settings = Settings::Get();
+  // TODO: Clean up the initialization process
   if (settings.Init(config)) {
     if (settings.GetConfigValue("width", &_width) &&
         settings.GetConfigValue("height", &_height) &&
@@ -28,13 +29,10 @@ auto GameInstance::Init(std::string_view config) -> bool {
         SDL_SetRenderLogicalPresentation(
             _renderer, _width, _height, SDL_LOGICAL_PRESENTATION_INTEGER_SCALE);
         SDL_SetDefaultTextureScaleMode(_renderer, SDL_SCALEMODE_PIXELART);
-        std::string player_texture;
         if (TextureManager::Get().Init()) {
-          if (settings.GetConfigValue("player_texture", &player_texture)) {
-            if (InitPlayer(player_texture) && InitMaze()) {
-              _maze->SetToStart(_player);
-              return true;
-            }
+          if (InitPlayer("pacman") && InitMaze()) {
+            _maze->SetToStart(_player);
+            return true;
           }
         }
       }

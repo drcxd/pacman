@@ -3,20 +3,58 @@
     "height": 248,
     "title": "Pac-Man",
     "max_fps": 60,
-    "player_texture": "assets/ghosts/pinky.png",
     "textures": {
         "maze": "assets/sprites/maze_fix.png",
-        "char": "assets/sprites/general.png"
+        "char": "assets/sprites/general_fix.png"
     },
     "sprite_animations": {
         "pacman-right": {
-            "texture_name": "char",
-            "frame_per_second": 9,
-            "frames": [
-                [456, 0, 15, 15],
-                [472, 0, 15, 15],
-                [488, 0, 15, 15]
+            "TextureName": "char",
+            "FramePerSecond": 9,
+            "Frames": [
+                {"x": 456, "y": 0, "w": 15, "h": 15},
+                {"x": 472, "y": 0, "w": 15, "h": 15},
+                {"x": 488, "y": 0, "w": 15, "h": 15}
             ]
+        },
+        "pacman-left": {
+            "TextureName": "char",
+            "FramePerSecond": 9,
+            "Frames": [
+                {"x": 456, "y": 16, "w": 15, "h": 15},
+                {"x": 472, "y": 16, "w": 15, "h": 15},
+                {"x": 488, "y": 16, "w": 15, "h": 15}
+            ]
+        },
+        "pacman-up": {
+            "TextureName": "char",
+            "FramePerSecond": 9,
+            "Frames": [
+                {"x": 456, "y": 33, "w": 15, "h": 15},
+                {"x": 472, "y": 33, "w": 15, "h": 15},
+                {"x": 488, "y": 33, "w": 15, "h": 15}
+            ]
+        },
+        "pacman-down": {
+            "TextureName": "char",
+            "FramePerSecond": 9,
+            "Frames": [
+                {"x": 456, "y": 48, "w": 15, "h": 15},
+                {"x": 472, "y": 48, "w": 15, "h": 15},
+                {"x": 488, "y": 48, "w": 15, "h": 15}
+            ]
+        }
+    },
+    "objects": {
+        "pacman": {
+            "SpriteAnimations": [
+                "pacman-left",
+                "pacman-right",
+                "pacman-up",
+                "pacman-down"
+            ],
+            "Speed": 32,
+            "Size": [15, 15]
         }
     }
 }
